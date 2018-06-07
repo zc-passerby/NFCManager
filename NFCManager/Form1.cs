@@ -195,7 +195,7 @@ namespace NFCManager
         {
             int status;         //返回状态
             string strError;    //错误信息
-            status = hfrdApi.Sys_Open(ref g_hDevice, 0, 0x0146, 0x8020);
+            status = hfrdApi.Sys_Open(ref g_hDevice, 0, 0x0416, 0x8020);
             if (0 != status)
             {
                 strError = "打开读卡器失败" + status.ToString();
@@ -443,7 +443,14 @@ namespace NFCManager
 
             //用当前发送的密钥验证Mifare One卡
             byte[] bytesKey = ToDigitsBytes("FFFFFFFFFFFF");
-            if (!authenticationCardA(mode, BLOCK_MEMBER_NO, bytesKey))
+            byte[] card_key = new byte[6];
+            card_key[0] = 0xFF;
+            card_key[1] = 0xFF;
+            card_key[2] = 0xFF;
+            card_key[3] = 0xFF;
+            card_key[4] = 0xFF;
+            card_key[5] = 0xFF;
+            if (!authenticationCardA(mode, BLOCK_MEMBER_NO, card_key))
                 return;
 
             //开始读取卡片数据
@@ -596,8 +603,16 @@ namespace NFCManager
 
             //用当前发送的密钥验证Mifare One卡
             byte[] bytesKey = ToDigitsBytes("FFFFFFFFFFFF");
-            if (!authenticationCardA(mode, BLOCK_MEMBER_NO, bytesKey))
-                return;
+            //byte[] card_key = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+            byte[] card_key = new byte[6];
+            card_key[0] = 0xFF;
+            card_key[1] = 0xFF;
+            card_key[2] = 0xFF;
+            card_key[3] = 0xFF;
+            card_key[4] = 0xFF;
+            card_key[5] = 0xFF;
+            if (!authenticationCardA(mode, BLOCK_MEMBER_NO, card_key)) Console.WriteLine("~~~");
+                //return;
 
             //开始写入卡片数据
             if (!writeCardA(BLOCK_MEMBER_NO, memBytesData))
